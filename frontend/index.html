@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GridRush - гонка за предметом</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="hud">
+      <div class="who">
+        <span id="status" class="badge" data-state="offline">Offline</span>
+        <strong id="my-nick" class="nick">-</strong>
+        <button id="rename-btn" class="link" type="button">Сменить ник</button>
+      </div>
+      <dl class="stats">
+        <div><dt>счёт</dt><dd id="my-score">0</dd></div>
+        <div><dt>до конца</dt><dd id="timer">–:––</dd></div>
+        <div><dt>онлайн</dt><dd id="online-count">0</dd></div>
+      </dl>
+    </header>
+
+    <main class="stage">
+      <section class="board-wrap">
+        <div id="board" class="board" aria-label="Игровое поле"></div>
+        <p id="toast" class="toast" role="status" hidden></p>
+      </section>
+
+      <aside class="side">
+        <section>
+          <h2>Сейчас онлайн</h2>
+          <ol id="online-leaders" class="ranks"></ol>
+        </section>
+        <section>
+          <h2>За всё время</h2>
+          <ol id="alltime-leaders" class="ranks"></ol>
+        </section>
+        <section class="wide">
+          <h2>События</h2>
+          <ul id="event-list" class="feed"></ul>
+        </section>
+      </aside>
+    </main>
+
+    <nav class="pad" aria-label="Управление">
+      <button data-direction="up" type="button" aria-label="Вверх">▲</button>
+      <button data-direction="left" type="button" aria-label="Влево">◀</button>
+      <button data-direction="down" type="button" aria-label="Вниз">▼</button>
+      <button data-direction="right" type="button" aria-label="Вправо">▶</button>
+    </nav>
+  </div>
+
+  <div id="overlay" class="overlay" hidden>
+    <form id="nick-form" class="sheet" autocomplete="off">
+      <h1 id="sheet-title">GridRush</h1>
+      <p>Первым доберись до предмета и получи очко.</p>
+      <label>Ник
+        <input id="nick-input" type="text" maxlength="16" spellcheck="false">
+      </label>
+      <p id="nick-error" class="error" role="alert"></p>
+      <div class="actions">
+        <button id="submit-btn" class="btn" type="submit">Играть</button>
+        <button id="cancel-btn" class="btn ghost" type="button" hidden>Отмена</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

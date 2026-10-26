@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: realtime-grid-game
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DATABASE_URL
+        sync: false
+      - key: MAX_PLAYERS
+        value: "5"
+      - key: IDLE_TIMEOUT_MS
+        value: "120000"
+      - key: AFK_REMOVE_MS
+        value: "300000"
+      - key: RECONNECT_GRACE_MS
+        value: "20000"
+      - key: ROUND_MS
+        value: "300000"
