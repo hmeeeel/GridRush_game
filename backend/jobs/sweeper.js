@@ -6,14 +6,14 @@
 const { IDLE_TIMEOUT_MS, AFK_REMOVE_MS, RECONNECT_GRACE_MS, SWEEP_INTERVAL_MS } = require("../config");
 const state = require("../game/state");
 const players = require("../game/players");
-const { commitOrRollback } = require("../game/transaction");
+const persistence = require("../db/persistence");
 const { enqueue } = require("../net/commandQueue");
 const connections = require("../net/connections");
 function sweep() {
-  return enqueue(async () => {
+  return enqueue(() => {
     const game = state.get();
-    const backup = state.backup();
     const events = [];
+    const changedPlayerIds = []; // кого убрали с поля - у них изменилась строка в БД
     const now = Date.now();
     for (const player of Object.values(game.players)) {
       if (!player.on_field) continue;
@@ -26,6 +26,7 @@ function sweep() {
       const goneTooLong = player.disconnectedAt && now - player.disconnectedAt >= RECONNECT_GRACE_MS;
       if (afkTooLong || goneTooLong) {
         players.removeFromField(player);
+        changedPlayerIds.push(player.id); // изм игроков
         events.push(state.recordEvent("PLAYER_LEFT", {
           playerId: player.id, nick: player.nick, reason: afkTooLong ? "AFK" : "DISCONNECTED"
         }));
@@ -36,12 +37,8 @@ function sweep() {
       events.push(state.recordEvent("GAME_ENDED", {}));
     }
     if (events.length === 0) return;
-    try {
-      await commitOrRollback(backup);
-      connections.broadcast(events);
-    } catch (error) {
-      console.error("Ошибка фоновой уборки:", error);
-    }
+    persistence.markDirty({ playerIds: changedPlayerIds });
+    connections.broadcast(events);
   });
 }
 function start() {

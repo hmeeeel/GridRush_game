@@ -21,8 +21,10 @@ async function load() {
     db.release();
   }
 }
-// Сохранить состояние целиком + новые записи в журнал очков
-async function save(game, scoreEntries) {
+
+// Сохранить общее состояние + ТОЛЬКО переданных игроков + новые записи в журнал очков.
+// (раньше здесь записывались все игроки за всю историю - с каждым новым игроком save становился медленнее)
+async function save(game, players, scoreEntries) {
   const db = await pool.connect();
   try {
     await db.query("begin");
@@ -33,7 +35,7 @@ async function save(game, scoreEntries) {
        where id = 1`,
       [game.stateVersion, game.totalItemsCollected, game.schemaVersion, JSON.stringify(game.item)]
     );
-    for (const p of Object.values(game.players)) {
+    for (const p of players) {
       await db.query(
         `insert into public.players
            (id, token_hash, nick, color, score, x, y, on_field, created_at, last_seen_at)
@@ -75,4 +77,5 @@ function rowToPlayer(row) {
     last_seen_at: row.last_seen_at
   };
 }
+
 module.exports = { load, save };

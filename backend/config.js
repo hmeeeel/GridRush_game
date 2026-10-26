@@ -29,7 +29,7 @@ module.exports = {
   IDLE_TIMEOUT_MS: numberFromEnv("IDLE_TIMEOUT_MS", 2 * 60_000),      // AFK-метка
   AFK_REMOVE_MS: numberFromEnv("AFK_REMOVE_MS", 5 * 60_000),          // убрать AFK с поля
   RECONNECT_GRACE_MS: numberFromEnv("RECONNECT_GRACE_MS", 20_000),    // ждём переподключения
-  ROUND_MS: numberFromEnv("ROUND_MS", 5 * 60_000),                    // длина игры
+  ROUND_MS: numberFromEnv("ROUND_MS", 50 * 60_000),                    // длина игры
 
   // --- Служебные таймеры ---
   PING_INTERVAL_MS: numberFromEnv("PING_INTERVAL_MS", 5000),
